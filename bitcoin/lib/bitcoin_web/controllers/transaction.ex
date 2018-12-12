@@ -1,6 +1,8 @@
 defmodule TRANSACTION do
     require GENSERVERS
   
+    alias Bitcoin.Repo
+    alias Bitcoin.Transactions
     #----------- Function to start transactions in the chain ------------ #
     def transactionChain(numTxns, transferAmt) do
       hashList = :ets.lookup(:table,"PublicKeys")
@@ -87,11 +89,15 @@ defmodule TRANSACTION do
       <> "01"
       <> publicKey
       inputs1 = Enum.map(inputs, fn [_,a,_]-> a end)
-  
+      #Io.inspect inputs
       amt = Enum.reduce(outputs,0, fn [_,a], acc->acc+ a end)
       map = %{sig: scriptSignature, inputTxIds: inputs1,
           inputs: {currNode, amt+transFee}, outputs: outputs}
+      map1= %{tid: transRef, amount: Enum.at(Enum.at(outputs,0),1)}
+      struct(Transactions, map1) |> Repo.insert
+      #IO.inspect Repo.all(Transactions)
       :ets.insert(:table, {"pendingTxns", transRef, transFee, map})
+      #IO.inspect(:ets.lookup(:table,{:pendingTxns}))
     end
   
     # ----------------- Function for signing using private key ------------------- #

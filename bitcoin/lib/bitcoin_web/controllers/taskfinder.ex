@@ -1,7 +1,13 @@
 defmodule TASKFINDER do
-    use Task
+  import Ecto
+  import Ecto.Changeset
+  import Ecto.Query  
+  use Task
+
     require MINERSERVER
-  
+    alias Bitcoin.Repo
+    alias Bitcoin.Blocks
+    alias Bitcoin.Transactions
     @miningValue 25
   
     def run(no,nbits,count) do
@@ -33,7 +39,7 @@ defmodule TASKFINDER do
         tasksList = Enum.map(miners, fn {_,x}->
           Task.async(fn -> startMining(list, "m_" <> x, minerFee,nbits) end)
         end)
-        await(tasksList,no,nbits, count)
+        await(tasksList,no,nbits, count,minerFee)
         Process.sleep(500)
         run(no+1,nbits, count)
       else
@@ -44,12 +50,12 @@ defmodule TASKFINDER do
   
     end
   
-    def await(tasks,no,nbits,count) do
+    def await(tasks,no,nbits,count,minerFee) do
       receive do
         message ->
           case Task.find(tasks, message) do
             {:fail, task} ->
-              await(List.delete(tasks, task),no,nbits,count)
+              await(List.delete(tasks, task),no,nbits,count, minerFee)
             {block, task} ->
               Enum.each(List.delete(tasks, task),fn x -> Task.shutdown(x) end)
               miners = :ets.lookup(:table,"MinerPublicKeys")
@@ -58,13 +64,15 @@ defmodule TASKFINDER do
               end)
               if(val) do
                 :ets.insert(:table,{"Blocks",no,block})
+                map=%{blockNo: no, blockId: Enum.at(block,0), reward: @miningValue+minerFee, transCount: Enum.count(Enum.at(block,3))}
+                struct(Blocks, map) |> Repo.insert
                 insertUnspentTxns(Enum.at(block,3))
-                #IO.inspect "block mined"
+                #IO.inspect :ets.lookup(:table, "Blocks")
               else
                 run(no,nbits,count)
               end
             nil ->
-              await(tasks,no,nbits,count)
+              await(tasks,no,nbits,count, minerFee)
           end
       end
     end
@@ -104,7 +112,18 @@ defmodule TASKFINDER do
       :ets.insert(:table,{"unspentTxns",x,b,c})
       end
     end)
-    Enum.each(list, fn {x,y,z}-> :ets.insert(:table,{"unspentTxns",x,y,z}) end)
+   # Process.sleep(9000)
+    Enum.each(list, fn {x,y,z}-> 
+      :ets.insert(:table,{"unspentTxns",x,y,z}) 
+      #c = Ecto.Changeset.put_change(b, )
+      #Repo.update(b)
+  end)
+   # IO.inspect :ets.lookup(:table,"unspentTxns")
+
+
+
+
+   
   end
   
   end

@@ -1,5 +1,8 @@
 defmodule BLOCKCHAIN do
 
+    alias Bitcoin.Repo
+    alias Bitcoin.Blocks
+
     @difficulty_target "00805F511E5157EB90B7754ACC85055B19EA74B43BD0F1D7A066946F973F87E8"
     @miningValue 25
     def calculateMerkleRoot(list,i) do
@@ -104,6 +107,8 @@ defmodule BLOCKCHAIN do
         block = createBlockHeader(NULL, [], @miningValue, 0, "0000000000000000000000000000000000000000000000000000000000000000",nbits)
         Enum.each(Enum.at(block,3), fn {txid, txfee, map} -> :ets.insert(:table, {"unspentTxns", txid, txfee, map}) end)
         WALLETS.updateUnspentAmount()
+        map=%{blockNo: 1, blockId: Enum.at(block,0), reward: 0, transCount: Enum.count(Enum.at(block,3))}
+        struct(Blocks, map) |> Repo.insert
         block
     end
 
