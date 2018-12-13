@@ -17,16 +17,19 @@ defmodule BitcoinWeb.PageController do
     TASKFINDER.run(2, nbits, 0)
     data = fetchRecords()
     #IO.inspect :ets.lookup(:table, "Blocks")
-    IO.inspect data
-    #Jason.encode!(%{"age" => 44, "name" => "Steve Irwin", "nationality" => "Australian"})
-    render(conn,"index.html", chart: data)
+    #IO.inspect Repo.all(Blocks)
+    js = Jason.encode!(data)
+    IO.inspect js
+    render(conn,"index.html", chart: js)
   end
 
   def fetchRecords do
     list = Repo.all(Blocks)
     |> Enum.map(fn x->
-      {_,out} = Map.fetch(x, :transCount)
-      Decimal.to_integer out
+      #IO.inspect Map.fetch(x, :transCount)
+      {_,count} = Map.fetch(x, :transCount)
+      {_,blockId} = Map.fetch(x, :blockNo)
+      [Decimal.to_integer(blockId), Decimal.to_integer(count)]
     end)
     list
   end
