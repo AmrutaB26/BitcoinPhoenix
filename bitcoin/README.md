@@ -34,8 +34,10 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
   This graph shows the total number of transactions with time which are expected to increase almost linearly as in our case. The total number of transactions include the total number of unspent and pending transactions with time. As shown by the graph the transactions increase with time. 
   * **Number of Transactions vs Block** <br>
   This graph shows the total number of transactions with each block. Since there are different possibilities of number of transactions which have been combined to solve for the difficulty target and hence different number of transactions are present in each block. This graph as expected has variable length which is random and depending upon the total number of transactions which reach the hash difficulty target.
-  * **Total mining rewards** <br> 
+  * **Mining Revenue** <br> 
   This graph shows the total mining rewards with respect to each block. Since, whenever a miner mines a particular block, the reward goes to him. As expected in the real life bitcoin the miner rewards have seen a reduction in amount with time. Out graph displays the slight decreasing curve with some amount of random behavour. 
+  * **Total Transaction Fee paid to miners** <br>
+  This graph shows the decreasing value of the total transaction fees which needs to be paid to the miner with each transaction and each increasing transaction as the size of network increases. 
   * **Cost percentage of Transaction Volume** <br> 
   This graph shows the total number of transactions which a miner mines in a block with respect to the total revenue which is generated for him. The mining rewards are expected to be decreasing with time. Though the graph of number of transactions with mining revenue is absolutely random and depends upon the amount of transaction fee in it. Since this is being generated at random the graph shows randomness as expected. 
   * **Transaction value with time** <br>
