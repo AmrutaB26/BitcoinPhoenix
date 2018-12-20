@@ -16,6 +16,8 @@ To start your Phoenix server:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
+![alt text](https://github.com/AmrutaB26/BitcoinPhoenix/blob/master/Details1.PNG)
+![alt text](https://github.com/AmrutaB26/BitcoinPhoenix/blob/master/Details2.PNG)
 ## Statistics
 * **Total number of bitcoins mined** <br>
     This is the statistics for the total number of bitcoins which have been mined in the network.
